@@ -59,7 +59,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         val currentMessages = _messages.value.orEmpty().toMutableList()
-        currentMessages.add(ChatMessage(userText, isUser = true))
+        currentMessages.add(ChatMessage(content = userText, isUser = true))
         _messages.value = currentMessages.toList()
 
         viewModelScope.launch {
@@ -80,7 +80,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                 conversationId = response.conversationId
 
                 val updatedMessages = _messages.value.orEmpty().toMutableList()
-                updatedMessages.add(ChatMessage(response.content, isUser = false))
+                updatedMessages.add(ChatMessage(content = response.content, isUser = false))
                 _messages.value = updatedMessages.toList()
 
                 db.conversationDao().insert(
