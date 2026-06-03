@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Nexent AI</string>
-    <string name="nav_home">首页</string>
-    <string name="nav_discover">发现</string>
-    <string name="nav_settings">我的</string>
-    <string name="start_chat">开始对话</string>
     <string name="input_hint">输入消息…</string>
-    <string name="please_configure_server">请先前往设置页面配置服务器地址</string>
-    <string name="settings_base_url_hint">Nexent 服务器地址（如 http://192.168.1.1:8000）</string>
-    <string name="settings_api_key_hint">API Key（选填）</string>
-    <string name="save">保存</string>
-    <string name="empty_agents">暂无可用智能体，请检查服务器配置</string>
+    <string name="empty_agents">暂无可用智能体\n下拉刷新重试</string>
     <string name="loading">加载中…</string>
-    <string name="settings_title">设置</string>
-    <string name="home_title">Nexent AI</string>
-    <string name="error_empty_base_url">服务器地址不能为空</string>
-    <string name="settings_saved">设置已保存</string>
     <string name="send_button_description">发送</string>
+    <string name="server_config">服务器配置</string>
 </resources>

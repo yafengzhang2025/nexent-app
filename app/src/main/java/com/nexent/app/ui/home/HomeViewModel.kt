@@ -24,21 +24,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val error: LiveData<String?> = _error
 
     fun loadAgents() {
-        val baseUrl = prefHelper.baseUrl
-        if (baseUrl.isBlank()) {
-            _error.value = "Server URL not configured. Please go to Settings."
-            return
-        }
-
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                val service = RetrofitClient.getInstance(baseUrl, prefHelper.apiKey)
-                val result = service.getAgents()
-                _agents.value = result
+                val service = RetrofitClient.getInstance(prefHelper.baseUrl)
+                val response = service.getAgents()
+                _agents.value = response.data
             } catch (e: Exception) {
-                _error.value = e.message ?: "Failed to load agents"
+                _error.value = "加载失败: ${e.message}"
             } finally {
                 _isLoading.value = false
             }

@@ -1,27 +1,29 @@
 package com.nexent.app.ui.chat
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.nexent.app.data.db.AppDatabase
-import com.nexent.app.data.db.ConversationEntity
 import com.nexent.app.data.model.ChatRequest
+import com.nexent.app.data.model.ChatStreamChunk
 import com.nexent.app.data.network.RetrofitClient
 import com.nexent.app.util.PreferenceHelper
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 
 data class ChatMessage(
     val id: Long = System.nanoTime(),
     val content: String,
-    val isUser: Boolean
+    val isUser: Boolean,
+    val imageUri: String? = null,
+    val isStreaming: Boolean = false
 )
 
 class ChatViewModel(application: Application) : AndroidViewModel(application) {
 
     private val prefHelper = PreferenceHelper(application)
-    private val db = AppDatabase.getInstance(application)
 
     private val _messages = MutableLiveData<List<ChatMessage>>(emptyList())
     val messages: LiveData<List<ChatMessage>> = _messages
@@ -32,69 +34,91 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    private var conversationId: String? = null
-    private var currentAgentId: String = ""
+    private var conversationId: Int = 1
+    private var currentAgentName: String = ""
 
-    fun init(agentId: String) {
-        currentAgentId = agentId
-        loadHistory(agentId)
+    fun init(agentName: String) {
+        currentAgentName = agentName
     }
 
-    private fun loadHistory(agentId: String) {
-        viewModelScope.launch {
-            val history = db.conversationDao().getConversationsByAgent(agentId)
-            val chatMessages = history.map { entity ->
-                ChatMessage(content = entity.message, isUser = entity.role == "user")
-            }
-            _messages.value = chatMessages
-        }
-    }
-
-    fun sendMessage(userText: String) {
-        if (userText.isBlank()) return
-        val baseUrl = prefHelper.baseUrl
-        if (baseUrl.isBlank()) {
-            _error.value = "Server URL not configured."
-            return
-        }
+    fun sendMessage(text: String) {
+        if (text.isBlank()) return
 
         val currentMessages = _messages.value.orEmpty().toMutableList()
-        currentMessages.add(ChatMessage(content = userText, isUser = true))
+        currentMessages.add(ChatMessage(content = text, isUser = true))
         _messages.value = currentMessages.toList()
 
-        viewModelScope.launch {
-            db.conversationDao().insert(
-                ConversationEntity(agentId = currentAgentId, message = userText, role = "user")
-            )
-        }
+        val baseUrl = prefHelper.baseUrl
+        val request = ChatRequest(
+            conversationId = conversationId,
+            agentName = currentAgentName,
+            query = text
+        )
 
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
+
+            // Add a placeholder AI message for streaming
+            val aiMsg = ChatMessage(content = "", isUser = false, isStreaming = true)
+            val updated = _messages.value.orEmpty().toMutableList()
+            updated.add(aiMsg)
+            _messages.value = updated.toList()
+
             try {
-                val service = RetrofitClient.getInstance(baseUrl, prefHelper.apiKey)
-                val response = service.chat(
-                    currentAgentId,
-                    ChatRequest(message = userText, conversationId = conversationId)
-                )
-                conversationId = response.conversationId
+                val channel: Channel<ChatStreamChunk> = RetrofitClient.streamChat(baseUrl, request)
+                var fullContent = StringBuilder()
 
-                val updatedMessages = _messages.value.orEmpty().toMutableList()
-                updatedMessages.add(ChatMessage(content = response.content, isUser = false))
-                _messages.value = updatedMessages.toList()
+                for (chunk in channel) {
+                    if (chunk.done) break
+                    fullContent.append(chunk.content)
+                    chunk.conversationId?.let { conversationId = it }
 
-                db.conversationDao().insert(
-                    ConversationEntity(
-                        agentId = currentAgentId,
-                        message = response.content,
-                        role = "assistant"
+                    // Update the streaming message
+                    val msgs = _messages.value.orEmpty().toMutableList()
+                    val lastIdx = msgs.lastIndex
+                    if (lastIdx >= 0 && msgs[lastIdx].isStreaming) {
+                        msgs[lastIdx] = msgs[lastIdx].copy(content = fullContent.toString())
+                        _messages.value = msgs.toList()
+                    }
+                }
+
+                // Mark streaming complete
+                val finalMsgs = _messages.value.orEmpty().toMutableList()
+                val last = finalMsgs.lastIndex
+                if (last >= 0 && finalMsgs[last].isStreaming) {
+                    finalMsgs[last] = finalMsgs[last].copy(
+                        content = fullContent.toString(),
+                        isStreaming = false
                     )
-                )
+                    _messages.value = finalMsgs.toList()
+                }
             } catch (e: Exception) {
-                _error.value = e.message ?: "Failed to send message"
+                // Remove the streaming placeholder on error
+                val errMsgs = _messages.value.orEmpty().toMutableList()
+                if (errMsgs.isNotEmpty() && errMsgs.last().isStreaming) {
+                    errMsgs.removeLast()
+                    _messages.value = errMsgs.toList()
+                }
+                _error.value = "发送失败: ${e.message}"
             } finally {
                 _isLoading.value = false
             }
         }
+    }
+
+    fun sendImageMessage(imageUri: Uri, description: String) {
+        val currentMessages = _messages.value.orEmpty().toMutableList()
+        currentMessages.add(
+            ChatMessage(
+                content = description.ifBlank { "[图片]" },
+                isUser = true,
+                imageUri = imageUri.toString()
+            )
+        )
+        _messages.value = currentMessages.toList()
+
+        // Also send the description as text query
+        sendMessage(description.ifBlank { "请分析这张图片" })
     }
 }

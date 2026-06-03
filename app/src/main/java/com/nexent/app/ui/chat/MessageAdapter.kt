@@ -1,7 +1,9 @@
 package com.nexent.app.ui.chat
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -45,6 +47,12 @@ class MessageAdapter : ListAdapter<ChatMessage, RecyclerView.ViewHolder>(Message
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: ChatMessage) {
             binding.tvMessage.text = message.content
+            if (!message.imageUri.isNullOrBlank()) {
+                binding.ivAttachment.visibility = View.VISIBLE
+                binding.ivAttachment.setImageURI(android.net.Uri.parse(message.imageUri))
+            } else {
+                binding.ivAttachment.visibility = View.GONE
+            }
         }
     }
 
@@ -52,6 +60,8 @@ class MessageAdapter : ListAdapter<ChatMessage, RecyclerView.ViewHolder>(Message
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: ChatMessage) {
             binding.tvMessage.text = message.content
+            binding.tvStreamingIndicator.visibility =
+                if (message.isStreaming) View.VISIBLE else View.GONE
         }
     }
 
