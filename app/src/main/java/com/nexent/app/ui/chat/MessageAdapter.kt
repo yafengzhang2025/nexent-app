@@ -57,7 +57,7 @@ class MessageAdapter : ListAdapter<ChatMessage, RecyclerView.ViewHolder>(Message
 
     private class MessageDiffCallback : DiffUtil.ItemCallback<ChatMessage>() {
         override fun areItemsTheSame(oldItem: ChatMessage, newItem: ChatMessage) =
-            oldItem === newItem
+            oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: ChatMessage, newItem: ChatMessage) =
             oldItem == newItem
     }

@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/discoverFragment"
-        android:name="com.nexent.app.ui.home.HomeFragment"
+        android:name="com.nexent.app.ui.home.DiscoverFragment"
         android:label="@string/nav_discover" />
 
     <fragment

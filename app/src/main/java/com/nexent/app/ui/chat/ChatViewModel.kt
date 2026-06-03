@@ -13,6 +13,7 @@ import com.nexent.app.util.PreferenceHelper
 import kotlinx.coroutines.launch
 
 data class ChatMessage(
+    val id: Long = System.nanoTime(),
     val content: String,
     val isUser: Boolean
 )

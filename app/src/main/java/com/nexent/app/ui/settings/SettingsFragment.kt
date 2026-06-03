@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.nexent.app.R
 import com.nexent.app.databinding.FragmentSettingsBinding
 import com.nexent.app.util.PreferenceHelper
 
@@ -36,13 +37,13 @@ class SettingsFragment : Fragment() {
             val apiKey = binding.etApiKey.text?.toString()?.trim() ?: ""
 
             if (baseUrl.isBlank()) {
-                Toast.makeText(requireContext(), "Server URL cannot be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.error_empty_base_url), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             prefHelper.baseUrl = baseUrl
             prefHelper.apiKey = apiKey
-            Toast.makeText(requireContext(), "Settings saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show()
         }
     }
 
