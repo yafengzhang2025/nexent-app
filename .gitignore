@@ -10,3 +10,6 @@
 local.properties
 app/build/
 !gradle/wrapper/gradle-wrapper.jar
+
+# APK output
+*.apk

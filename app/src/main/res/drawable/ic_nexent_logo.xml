@@ -4,12 +4,15 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Background rounded square outer -->
     <path
         android:fillColor="#4F46E5"
-        android:pathData="M54,0 A54,54,0,1,1,53.999,0z" />
+        android:pathData="M14,0h80c7.7,0 14,6.3 14,14v80c0,7.7 -6.3,14 -14,14h-80c-7.7,0 -14,-6.3 -14,-14v-80c0,-7.7 6.3,-14 14,-14z" />
+    <!-- Inner lighter square -->
     <path
         android:fillColor="#6366F1"
-        android:pathData="M54,4 A50,50,0,1,1,53.999,4z" />
+        android:pathData="M18,4h72c7.7,0 14,6.3 14,14v72c0,7.7 -6.3,14 -14,14h-72c-7.7,0 -14,-6.3 -14,-14v-72c0,-7.7 6.3,-14 14,-14z" />
+    <!-- Bold N letter (stroked) -->
     <path
         android:fillColor="@android:color/transparent"
         android:strokeColor="#FFFFFF"

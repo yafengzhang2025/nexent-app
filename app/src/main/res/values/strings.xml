@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Nexent AI</string>
-    <string name="input_hint">输入消息…</string>
-    <string name="empty_agents">暂无可用智能体\n下拉刷新重试</string>
+    <string name="app_name">Nexent</string>
+    <string name="input_hint">发消息给 %s…</string>
+    <string name="empty_agents">连接服务器以发现智能体</string>
     <string name="loading">加载中…</string>
     <string name="send_button_description">发送</string>
     <string name="server_config">服务器配置</string>
+    <string name="ai_thinking">思考中…</string>
+    <string name="online">在线</string>
+    <string name="search_hint">搜索智能体或工作室</string>
+    <string name="tab_all">全部</string>
+    <string name="tab_recommended">推荐</string>
+    <string name="badge_recommend">推荐</string>
+    <string name="pro_upgrade">解锁 Pro</string>
+    <string name="pro_title">Pro</string>
+    <string name="pro_subtitle">升级 Pro 解锁更多强大功能</string>
+    <string name="deep_think">深度思考</string>
+    <string name="deep_think_r1">深度思考 (R1)</string>
+    <string name="mode_quick">快速</string>
+    <string name="mode_deep">深度思考</string>
+    <string name="thinking_label">思考过程</string>
+    <string name="ai_disclaimer">内容由 AI 生成，仅供参考</string>
+    <string name="btn_add">添加</string>
+    <string name="btn_emoji">表情</string>
+    <string name="btn_image">图片</string>
+    <string name="btn_edit">编辑</string>
+    <string name="back">返回</string>
 </resources>

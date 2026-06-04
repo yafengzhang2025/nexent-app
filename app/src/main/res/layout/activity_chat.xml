@@ -8,14 +8,73 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        app:elevation="0dp">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <!-- Single-row header: back arrow + avatar + title + online -->
+        <LinearLayout
+            android:id="@+id/chat_header"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary"
-            app:titleTextColor="@color/on_primary" />
+            android:layout_height="56dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="4dp"
+            android:paddingEnd="16dp"
+            android:background="@color/surface">
+
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/back"
+                android:src="?attr/homeAsUpIndicator"
+                android:tint="@color/text_secondary"
+                android:scaleType="center" />
+
+            <FrameLayout
+                android:id="@+id/fl_chat_avatar"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_avatar_03"
+                android:layout_marginEnd="10dp">
+
+                <ImageView
+                    android:id="@+id/iv_chat_avatar"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_avatar_placeholder" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_agent_subtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <View
+                android:id="@+id/dot_online"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:background="@drawable/bg_dot_online"
+                android:layout_marginEnd="5dp" />
+
+            <TextView
+                android:id="@+id/tv_online"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/online"
+                android:textColor="@color/online"
+                android:textSize="12sp" />
+        </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -29,8 +88,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:clipToPadding="false"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             app:layout_constraintBottom_toTopOf="@+id/input_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,92 +99,168 @@
             android:id="@+id/progress_bar_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:indeterminateTint="@color/primary"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/input_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Input area -->
         <LinearLayout
             android:id="@+id/input_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/surface"
-            android:elevation="8dp"
+            android:elevation="4dp"
             android:orientation="vertical"
-            android:padding="8dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <!-- Action buttons row: camera, file, voice -->
+            <!-- Row 1: Text input + Send button -->
             <LinearLayout
-                android:id="@+id/actions_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingBottom="4dp">
 
-                <ImageButton
-                    android:id="@+id/btn_camera"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="拍照"
-                    android:src="@android:drawable/ic_menu_camera"
-                    android:tint="@color/primary" />
-
-                <ImageButton
-                    android:id="@+id/btn_attach"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="上传文件"
-                    android:src="@android:drawable/ic_menu_gallery"
-                    android:tint="@color/primary" />
-
-                <ImageButton
-                    android:id="@+id/btn_voice"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="语音输入"
-                    android:src="@android:drawable/ic_btn_speak_now"
-                    android:tint="@color/primary" />
-
-            </LinearLayout>
-
-            <!-- Text input row -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
+                <!-- Input field -->
                 <EditText
                     android:id="@+id/et_message"
                     android:layout_width="0dp"
-                    android:layout_height="52dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/bg_input_field"
                     android:hint="@string/input_hint"
                     android:inputType="textMultiLine|textCapSentences"
                     android:maxLines="4"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:minHeight="44dp"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_tertiary"
                     android:textSize="14sp" />
 
+                <!-- Send button -->
                 <ImageButton
                     android:id="@+id/btn_send"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_bubble_user"
+                    android:contentDescription="@string/send_button_description"
+                    android:src="@drawable/ic_send"
+                    android:tint="@color/on_primary"
+                    android:scaleType="center" />
+            </LinearLayout>
+
+            <!-- Row 2: Tool buttons + Deep Think chip -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="2dp">
+
+                <!-- Tool buttons -->
+                <ImageButton
+                    android:id="@+id/btn_add"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/btn_add"
+                    android:src="@drawable/ic_add_circle"
+                    android:tint="@color/text_secondary"
+                    android:scaleType="center" />
+
+                <ImageButton
+                    android:id="@+id/btn_emoji"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_marginStart="4dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/send_button_description"
-                    android:src="@android:drawable/ic_menu_send"
-                    android:tint="@color/primary" />
+                    android:contentDescription="@string/btn_emoji"
+                    android:src="@drawable/ic_emoji"
+                    android:tint="@color/text_secondary"
+                    android:scaleType="center" />
 
+                <ImageButton
+                    android:id="@+id/btn_image"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/btn_image"
+                    android:src="@drawable/ic_image"
+                    android:tint="@color/text_secondary"
+                    android:scaleType="center" />
+
+                <ImageButton
+                    android:id="@+id/btn_edit"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/btn_edit"
+                    android:src="@drawable/ic_scissors"
+                    android:tint="@color/text_secondary"
+                    android:scaleType="center" />
+
+                <!-- Spacer pushes chip to right -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!-- Mode dropdown: Quick / Deep Think -->
+                <LinearLayout
+                    android:id="@+id/mode_selector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/bg_deep_think_chip"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="6dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:id="@+id/tv_mode_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mode_quick"
+                        android:textColor="@color/primary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_chevron_down"
+                        android:tint="@color/primary"
+                        android:scaleType="fitCenter" />
+                </LinearLayout>
             </LinearLayout>
+
+            <!-- Disclaimer -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/ai_disclaimer"
+                android:textColor="@color/text_tertiary"
+                android:textSize="10sp"
+                android:paddingTop="2dp"
+                android:paddingBottom="6dp" />
 
         </LinearLayout>
 

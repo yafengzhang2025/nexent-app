@@ -12,8 +12,10 @@ class PreferenceHelper(context: Context) {
         private const val PREF_NAME = "nexent_prefs"
         private const val KEY_HOST = "server_host"
         private const val KEY_PORT = "server_port"
+        private const val KEY_APIKEY = "server_apikey"
         const val DEFAULT_HOST = "60.204.251.153"
         const val DEFAULT_PORT = "5013"
+        const val DEFAULT_APIKEY = "nexent-6f1913254fb6a73d55d3254e"
     }
 
     var host: String
@@ -23,6 +25,10 @@ class PreferenceHelper(context: Context) {
     var port: String
         get() = prefs.getString(KEY_PORT, DEFAULT_PORT) ?: DEFAULT_PORT
         set(value) = prefs.edit().putString(KEY_PORT, value).apply()
+
+    var apikey: String
+        get() = prefs.getString(KEY_APIKEY, DEFAULT_APIKEY) ?: DEFAULT_APIKEY
+        set(value) = prefs.edit().putString(KEY_APIKEY, value).apply()
 
     val baseUrl: String
         get() {

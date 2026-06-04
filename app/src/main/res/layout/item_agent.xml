@@ -4,52 +4,99 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_margin="5dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="14dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/surface"
+    app:strokeWidth="0dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:padding="14dp">
 
-        <ImageView
-            android:id="@+id/iv_avatar"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            android:src="@drawable/ic_avatar_placeholder"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!-- Top row: Avatar + Recommend badge -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <FrameLayout
+                android:id="@+id/fl_avatar"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_avatar_01">
+
+                <ImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_avatar_placeholder" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_recommend_badge"
+                android:text="@string/badge_recommend"
+                android:textColor="@color/badge_text"
+                android:textSize="10sp"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <!-- Agent name -->
         <TextView
             android:id="@+id/tv_agent_name"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
+            android:layout_marginTop="10dp"
             android:textColor="@color/text_primary"
-            android:textSize="17sp"
+            android:textSize="15sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_avatar"
-            app:layout_constraintTop_toTopOf="@id/iv_avatar" />
+            android:maxLines="1"
+            android:ellipsize="end" />
 
+        <!-- Author info -->
+        <TextView
+            android:id="@+id/tv_agent_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/text_tertiary"
+            android:textSize="11sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:visibility="gone" />
+
+        <!-- Description -->
         <TextView
             android:id="@+id/tv_agent_description"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_avatar"
-            app:layout_constraintTop_toBottomOf="@id/tv_agent_name" />
+            android:textSize="12sp"
+            android:lineSpacingExtra="2dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Popularity (hidden) -->
+        <TextView
+            android:id="@+id/tv_popularity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/text_tertiary"
+            android:textSize="11sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

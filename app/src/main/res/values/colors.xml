@@ -1,14 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#6750A4</color>
-    <color name="primary_variant">#7965AF</color>
+    <!-- Primary - Indigo -->
+    <color name="primary">#4F46E5</color>
+    <color name="primary_dark">#3730A3</color>
+    <color name="primary_light">#818CF8</color>
     <color name="on_primary">#FFFFFF</color>
-    <color name="secondary">#625B71</color>
-    <color name="background">#FFFBFE</color>
-    <color name="surface">#FFFBFE</color>
-    <color name="bubble_user">#6750A4</color>
-    <color name="bubble_ai">#F3F3F3</color>
-    <color name="text_primary">#1C1B1F</color>
-    <color name="text_secondary">#938F99</color>
-    <color name="divider">#E7E0EC</color>
+
+    <!-- Secondary - Purple -->
+    <color name="secondary">#7C3AED</color>
+    <color name="secondary_light">#A78BFA</color>
+
+    <!-- Background & Surface -->
+    <color name="background">#F1F5F9</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F8FAFC</color>
+
+    <!-- Text -->
+    <color name="text_primary">#1E293B</color>
+    <color name="text_secondary">#64748B</color>
+    <color name="text_tertiary">#94A3B8</color>
+    <color name="text_on_dark">#E2E8F0</color>
+
+    <!-- Bubbles -->
+    <color name="bubble_user_start">#4F46E5</color>
+    <color name="bubble_user_end">#7C3AED</color>
+    <color name="bubble_ai">#FFFFFF</color>
+    <color name="bubble_ai_border">#E2E8F0</color>
+
+    <!-- Status -->
+    <color name="online">#10B981</color>
+    <color name="error">#EF4444</color>
+
+    <!-- Divider -->
+    <color name="divider">#E2E8F0</color>
+
+    <!-- Sidebar/Dark nav -->
+    <color name="dark_nav">#1E1B4B</color>
+    <color name="dark_nav_light">#312E81</color>
+
+    <!-- Avatar colors -->
+    <color name="avatar_1">#EC4899</color>
+    <color name="avatar_2">#3B82F6</color>
+    <color name="avatar_3">#10B981</color>
+    <color name="avatar_4">#F59E0B</color>
+    <color name="avatar_5">#14B8A6</color>
+    <color name="avatar_6">#8B5CF6</color>
+    <color name="avatar_7">#EF4444</color>
+    <color name="avatar_8">#6366F1</color>
+
+    <!-- Recommend badge -->
+    <color name="badge_bg">#EFF6FF</color>
+    <color name="badge_text">#3B82F6</color>
+
+    <!-- Pro banner -->
+    <color name="pro_start">#4F46E5</color>
+    <color name="pro_end">#7C3AED</color>
 </resources>

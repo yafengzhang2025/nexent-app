@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_server_config"
-        android:icon="@android:drawable/ic_menu_manage"
+        android:icon="@drawable/ic_server_config"
         android:title="服务器配置"
         app:showAsAction="always" />
 </menu>

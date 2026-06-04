@@ -18,30 +18,33 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    private const val AUTH_TOKEN = "nexent-6f1913254fb6a73d55d3254e"
-
     @Volatile
     private var instance: NexentApiService? = null
 
     @Volatile
     private var currentBaseUrl: String = ""
 
+    @Volatile
+    private var currentApiKey: String = ""
+
     private val gson = Gson()
 
-    fun getInstance(baseUrl: String): NexentApiService {
+    fun getInstance(baseUrl: String, apiKey: String = ""): NexentApiService {
         val normalizedUrl = if (baseUrl.endsWith("/")) baseUrl else "$baseUrl/"
-        if (instance == null || normalizedUrl != currentBaseUrl) {
+        val key = apiKey.ifBlank { "nexent-6f1913254fb6a73d55d3254e" }
+        if (instance == null || normalizedUrl != currentBaseUrl || key != currentApiKey) {
             synchronized(this) {
-                if (instance == null || normalizedUrl != currentBaseUrl) {
+                if (instance == null || normalizedUrl != currentBaseUrl || key != currentApiKey) {
                     currentBaseUrl = normalizedUrl
-                    instance = buildService(normalizedUrl)
+                    currentApiKey = key
+                    instance = buildService(normalizedUrl, key)
                 }
             }
         }
         return instance!!
     }
 
-    private fun buildService(baseUrl: String): NexentApiService {
+    private fun buildService(baseUrl: String, apiKey: String): NexentApiService {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
@@ -52,7 +55,7 @@ object RetrofitClient {
                 val original = chain.request()
                 val request = original.newBuilder()
                     .addHeader("Content-Type", "application/json")
-                    .addHeader("Authorization", "Bearer $AUTH_TOKEN")
+                    .addHeader("Authorization", "Bearer $apiKey")
                     .build()
                 chain.proceed(request)
             }
@@ -74,8 +77,10 @@ object RetrofitClient {
      */
     suspend fun streamChat(
         baseUrl: String,
-        request: ChatRequest
+        request: ChatRequest,
+        apiKey: String = ""
     ): Channel<ChatStreamChunk> = withContext(Dispatchers.IO) {
+        val key = apiKey.ifBlank { "nexent-6f1913254fb6a73d55d3254e" }
         val channel = Channel<ChatStreamChunk>(Channel.UNLIMITED)
         val normalizedUrl = if (baseUrl.endsWith("/")) baseUrl else "$baseUrl/"
 
@@ -92,7 +97,7 @@ object RetrofitClient {
             .url("${normalizedUrl}nb/v1/chat/run")
             .post(reqBody)
             .addHeader("Content-Type", "application/json")
-            .addHeader("Authorization", "Bearer $AUTH_TOKEN")
+            .addHeader("Authorization", "Bearer $key")
             .addHeader("Idempotency-Key", "idem-${UUID.randomUUID()}")
             .build()
 

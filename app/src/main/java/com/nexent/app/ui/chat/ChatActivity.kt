@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nexent.app.R
 import com.nexent.app.databinding.ActivityChatBinding
 import java.io.File
 import java.util.Locale
@@ -74,8 +75,9 @@ class ChatActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val agentName = intent.getStringExtra(EXTRA_AGENT_NAME) ?: "AI Assistant"
+        val agentTitle = intent.getStringExtra(EXTRA_AGENT_TITLE) ?: agentName
 
-        setupToolbar(agentName)
+        setupHeader(agentTitle)
         setupRecyclerView()
         setupInputArea()
         observeViewModel()
@@ -83,13 +85,33 @@ class ChatActivity : AppCompatActivity() {
         viewModel.init(agentName)
     }
 
-    private fun setupToolbar(agentName: String) {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.apply {
-            title = agentName
-            setDisplayHomeAsUpEnabled(true)
-        }
-        binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+    private fun setupHeader(agentTitle: String) {
+        binding.btnBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+
+        // Show Chinese title
+        binding.tvAgentSubtitle.text = agentTitle
+
+        // Assign avatar color based on agent name hash
+        val avatarIndex = (agentTitle.hashCode().mod(avatarBgList.size).let {
+            if (it < 0) it + avatarBgList.size else it
+        })
+        binding.flChatAvatar.setBackgroundResource(avatarBgList[avatarIndex])
+
+        // Set dynamic input hint with Chinese name
+        binding.etMessage.hint = getString(R.string.input_hint, agentTitle)
+    }
+
+    companion object {
+        const val EXTRA_AGENT_NAME = "extra_agent_name"
+        const val EXTRA_AGENT_TITLE = "extra_agent_title"
+        const val EXTRA_AGENT_DESC = "extra_agent_desc"
+
+        private val avatarBgList = intArrayOf(
+            R.drawable.bg_avatar_01, R.drawable.bg_avatar_02,
+            R.drawable.bg_avatar_03, R.drawable.bg_avatar_04,
+            R.drawable.bg_avatar_05, R.drawable.bg_avatar_06,
+            R.drawable.bg_avatar_07, R.drawable.bg_avatar_08
+        )
     }
 
     private fun setupRecyclerView() {
@@ -111,7 +133,8 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnVoice.setOnClickListener {
+        // Voice input via the add button
+        binding.btnAdd.setOnClickListener {
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
@@ -120,13 +143,45 @@ class ChatActivity : AppCompatActivity() {
             voiceLauncher.launch(intent)
         }
 
-        binding.btnAttach.setOnClickListener {
+        // File picker via image button
+        binding.btnImage.setOnClickListener {
             pickFileLauncher.launch("image/*")
         }
 
-        binding.btnCamera.setOnClickListener {
+        // Camera via edit button
+        binding.btnEdit.setOnClickListener {
             checkCameraPermission()
         }
+
+        // Emoji button - insert emoji at cursor (simple emoji picker)
+        binding.btnEmoji.setOnClickListener {
+            val current = binding.etMessage.text ?: return@setOnClickListener
+            current.insert(current.length, "😊")
+        }
+
+        // Mode dropdown selector
+        binding.modeSelector.setOnClickListener { showModePopup() }
+    }
+
+    private fun showModePopup() {
+        val popup = android.widget.PopupMenu(this, binding.modeSelector)
+        popup.menu.add(0, 0, 0, getString(R.string.mode_quick))
+        popup.menu.add(0, 1, 1, getString(R.string.mode_deep))
+        popup.setOnMenuItemClickListener { item ->
+            val mode = if (item.itemId == 1) "deep" else "quick"
+            selectMode(mode)
+            true
+        }
+        popup.show()
+    }
+
+    private fun selectMode(mode: String) {
+        if (mode == "deep") {
+            binding.tvModeLabel.text = getString(R.string.mode_deep)
+        } else {
+            binding.tvModeLabel.text = getString(R.string.mode_quick)
+        }
+        viewModel.setThinkMode(mode)
     }
 
     private fun checkCameraPermission() {
@@ -167,10 +222,5 @@ class ChatActivity : AppCompatActivity() {
                 Toast.makeText(this, error, Toast.LENGTH_LONG).show()
             }
         }
-    }
-
-    companion object {
-        const val EXTRA_AGENT_NAME = "extra_agent_name"
-        const val EXTRA_AGENT_DESC = "extra_agent_desc"
     }
 }

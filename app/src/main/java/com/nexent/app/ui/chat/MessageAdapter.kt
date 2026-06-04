@@ -62,6 +62,14 @@ class MessageAdapter : ListAdapter<ChatMessage, RecyclerView.ViewHolder>(Message
             binding.tvMessage.text = message.content
             binding.tvStreamingIndicator.visibility =
                 if (message.isStreaming) View.VISIBLE else View.GONE
+
+            // Show thinking content if available (deep think mode)
+            if (message.thinkingContent.isNotBlank()) {
+                binding.thinkingContainer.visibility = View.VISIBLE
+                binding.tvThinking.text = message.thinkingContent
+            } else {
+                binding.thinkingContainer.visibility = View.GONE
+            }
         }
     }
 
