@@ -32,7 +32,14 @@ jobs:
         run: ./gradlew assembleDebug
 
       - name: Upload debug APK
+        id: upload-debug-apk
         uses: actions/upload-artifact@v4
         with:
           name: debug-apk-${{ github.run_number }}
           path: app/build/outputs/apk/debug/*.apk
+
+      - name: Show APK download link
+        run: |
+          echo "APK download: ${{ steps.upload-debug-apk.outputs.artifact-url }}"
+          echo "### APK Download" >> "$GITHUB_STEP_SUMMARY"
+          echo "- [Download debug APK](${{ steps.upload-debug-apk.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
